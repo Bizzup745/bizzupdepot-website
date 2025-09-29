@@ -16,5 +16,29 @@
   },
   "index.backup.qmd": {
     "index.backup.html": "6217a85e"
+  },
+  "en/about.qmd": {
+    "about.html": "9e199ad4"
+  },
+  "en/catalog.qmd": {
+    "catalog.html": "4f37a083"
+  },
+  "en/contact.qmd": {
+    "contact.html": "d5be11e9"
+  },
+  "en/index.qmd": {
+    "index.html": "f68d5b72"
+  },
+  "ko/about.qmd": {
+    "about.html": "4f3a070b"
+  },
+  "ko/catalog.qmd": {
+    "catalog.html": "43a14cb6"
+  },
+  "ko/contact.qmd": {
+    "contact.html": "24353265"
+  },
+  "ko/index.qmd": {
+    "index.html": "d287b722"
   }
 }
