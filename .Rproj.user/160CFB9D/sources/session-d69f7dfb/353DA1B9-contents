@@ -1,0 +1,608 @@
+---
+title: "Demand Planning (Blended ARIMA/NNETAR)"
+output: html_document
+date: "`r Sys.Date()`"
+params:
+  # ===== Execution parameters =====
+  data_dir: "C:/Users/mjk/OneDrive/Desktop/BIZZUP/Analytics/Demand Forecasting"
+  vendors_filter: ["SEMPIO FOOD SERVICES, INC."] # [] = all; filter to subset
+  recent_vendor_years: 2 # exclude vendors without purchases in last N years
+  avg_order_lookback_m: 6 # months history for lot/cadence stats
+  
+  
+  # Review/LT in weeks: cover = Review + LT (based on purchase cadence)
+  default_review_weeks: 1
+  default_lt_weeks_fallback: 0
+  
+  
+  # Safety stock / caps
+  z_A: 1.64
+  z_B: 1.28
+  z_C: 0.84
+  sigma_cap_mu_mult: 1.3 # σ cap = min(σ_resid, mu * sigma_cap_mu_mult)
+  cover_weeks_cap: 6 # max total cover weeks
+  min_cycle: 1 # lower bound for cycle weeks (when used)
+  max_cycle: 12 # upper bound for cycle weeks (when used)
+  
+  
+  # Zero-sales / ramp-down rules
+  stop_if_no_sale_90d: true # if no sales 90d and stock ≥ fc, skip ordering
+  rampdown_13w_ratio: 0.6 # if last13/prev13 ≤ ratio → scale fc
+  rampdown_fc_mult: 0.7
+  
+  
+  # Lot/Case enforcement
+  use_lot_pref_p75: true # prefer 75th percentile as observed lot
+  enforce_min_lot_when_ordering: true
+  
+  
+  # Runtime behavior
+  install_missing_pkgs: false # avoid installing during knit unless needed
+---
+List of vendors to check
+- TAKARA SAKE USA
+- SEMPIO FOOD SERVICES, INC.
+- HAITAI, INC.
+- JAYONE FOODS, INC.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+req_pkgs <- c(
+  "readr","readxl","dplyr","tidyr","stringr","lubridate","janitor",
+  "purrr","openxlsx","slider","tibble","tsintermittent","forecast"
+)
+to_install <- setdiff(req_pkgs, rownames(installed.packages()))
+if (length(to_install) > 0) install.packages(to_install, Ncpus = 2)
+invisible(lapply(req_pkgs, library, character.only = TRUE))
+options(stringsAsFactors = FALSE)
+set.seed(123)
+```
+
+```{r 01-utils}
+`%||%` <- function(x,y) if (is.null(x)) y else x
+
+parse_num <- function(x) suppressWarnings(readr::parse_number(as.character(x)))
+
+parse_date_any2 <- function(x){
+  y <- suppressWarnings(lubridate::parse_date_time(as.character(x),
+  orders = c("ymd","mdy","dmy","Ymd HMS","mdy HMS","dmy HMS")))
+  y <- as.Date(y)
+  if (mean(is.na(y)) > 0.5) {
+  xn <- suppressWarnings(as.numeric(as.character(x)))
+  y2 <- suppressWarnings(as.Date(xn, origin = "1899-12-30"))
+  if (sum(!is.na(y2)) > sum(!is.na(y))) y <- y2
+  }
+  y
+  }
+
+norm_key <- function(x){
+x <- toupper(as.character(x))
+x <- stringr::str_replace_all(x, "[\\s\\-_/:]+", " ")
+stringr::str_squish(x)
+}
+
+# helpers
+nz <- function(x, v = 0) dplyr::coalesce(x, v)
+cap <- function(x, lo, hi) pmin(pmax(x, lo), hi)
+
+#Normalize vendor
+norm_vendor <- function(v){
+  v <- as.character(v)
+  v <- stringr::str_squish(v)
+  v <- toupper(v)
+  ifelse(v == "" | is.na(v), NA_character_, v)
+}
+```
+
+
+```{r Load dataset, include=FALSE}
+# Set working directory
+setwd("C:/Users/mjk/OneDrive/Desktop/BIZZUP/Analytics/Demand Forecasting")
+
+# Purchases
+pur_2020_2023_raw <- read_csv("Bizzup_Purchases by Product 2020-2023.csv", skip = 4, show_col_types = FALSE) %>% clean_names()
+pur_2024_raw      <- read_csv("Bizzup_Purchases by Product 2024.csv",            skip = 4, show_col_types = FALSE) %>% clean_names()
+pur_2025_raw      <- read_csv("Bizzup_Purchases by Product 2025.csv",            skip = 4, show_col_types = FALSE) %>% clean_names()
+
+# Sales (last 24M)
+sd_raw <- read_csv("Bizzup_Sales Detail_Last24M.csv", skip = 4, show_col_types = FALSE) %>% clean_names()
+
+# Product
+prod_raw <- read_xls("Bizzup_Product List.xls") %>% clean_names()
+
+```
+
+```{r 03-product-clean}
+pl_cols <- names(prod_raw)
+product_list <- prod_raw %>%
+  dplyr::transmute(
+    item_full = dplyr::coalesce(
+    !!!list(if ("product_service_name" %in% pl_cols) rlang::sym("product_service_name") else NULL),
+    !!!list(rlang::sym(pl_cols[1]))
+    ),
+    Description = if ("sales_description" %in% pl_cols) sales_description else NA_character_,
+    Vendor_SKU = if ("sku" %in% pl_cols) sku else NA_character_,
+    List_Price = if ("sales_price_rate" %in% pl_cols) parse_num(sales_price_rate) else NA_real_,
+    Unit_Cost = if ("purchase_cost" %in% pl_cols) parse_num(purchase_cost) else NA_real_,
+    QOH_raw = if ("quantity_on_hand" %in% pl_cols) parse_num(quantity_on_hand) else NA_real_,
+    key_name = norm_key(item_full)
+    ) %>%
+  dplyr::mutate(
+    On_Hand = dplyr::if_else(is.na(QOH_raw) | QOH_raw < 1, 0, QOH_raw),
+    Case_Pack = 1,
+    MOQ = 1
+  ) %>%
+  dplyr::select(key_name, Description, Vendor_SKU, List_Price, Unit_Cost, On_Hand, Case_Pack, MOQ)
+```
+
+```{r 04-sales-clean}
+need_sales <- c("product_service_full_name","transaction_date","quantity","sales_price")
+miss_sales <- setdiff(need_sales, names(sd_raw))
+if (length(miss_sales) > 0) stop("Sales detail missing cols: ", paste(miss_sales, collapse = ", "))
+
+
+sales_df <- sd_raw %>%
+  dplyr::transmute(
+    key_name = norm_key(product_service_full_name),
+    s_date = parse_date_any2(transaction_date),
+    qty = parse_num(quantity),
+    price = parse_num(sales_price),
+    amt = qty * price
+    ) %>%
+    dplyr::filter(!is.na(key_name), !is.na(s_date))
+
+
+sales_wk <- sales_df %>%
+  dplyr::mutate(week = lubridate::floor_date(s_date, "week", week_start = 1)) %>%
+  dplyr::summarise(qty = sum(qty, na.rm = TRUE), .by = c(key_name, week)) %>%
+  dplyr::arrange(key_name, week)
+stopifnot(nrow(sales_wk) > 0)
+```
+
+
+```{r 05-purchases-clean}
+need_pur <- c("product_service_full_name","transaction_date","quantity","rate","vendor")
+pur_df <- dplyr::bind_rows(pur_2020_2023_raw, pur_2024_raw, pur_2025_raw) %>%
+  dplyr::select(dplyr::any_of(need_pur)) %>%
+  dplyr::mutate(
+    key_name = norm_key(product_service_full_name),
+    p_date = parse_date_any2(transaction_date),
+    p_qty = parse_num(quantity),
+    p_rate = parse_num(rate),
+    vendor = if ("vendor" %in% names(.)) norm_vendor(vendor) else NA_character_
+    ) %>%
+  dplyr::filter(!is.na(key_name), !is.na(p_date))
+
+
+# Active vendors within time window
+cutoff_v <- Sys.Date() - lubridate::years(params$recent_vendor_years)
+active_vendors <- pur_df %>%
+  dplyr::filter(!is.na(vendor) & vendor != "", p_date >= cutoff_v) %>%
+  dplyr::distinct(vendor)
+
+
+# Latest observed vendor per SKU (reference)
+pur_vendor_map <- pur_df %>%
+  dplyr::filter(!is.na(vendor) & vendor != "") %>%
+  dplyr::arrange(dplyr::desc(p_date)) %>%
+  dplyr::distinct(key_name, .keep_all = TRUE) %>%
+  dplyr::transmute(key_name, vendor)
+```
+
+
+```{r 06-po-behavior}
+# Lookback window for lot/cadence
+lookback_m <- params$avg_order_lookback_m %||% 6
+lookback_m <- max(1L, as.integer(lookback_m))
+ref_po <- max(pur_df$p_date, na.rm = TRUE)
+cutoff_po <- lubridate::add_with_rollback(ref_po, -months(lookback_m))
+
+# Aggregate per (key, vendor, date) to represent one order
+po_orders <- pur_df %>%
+  dplyr::filter(p_date >= cutoff_po) %>%
+  dplyr::summarise(order_qty = sum(p_qty, na.rm = TRUE), .by = c(key_name, vendor, p_date)) %>%
+  dplyr::arrange(key_name, p_date)
+
+
+# Preferred lot size stats
+po_lot_pref <- po_orders %>%
+  dplyr::summarise(
+    lot_med = stats::median(order_qty, na.rm = TRUE),
+    lot_p75 = stats::quantile(order_qty, 0.75, na.rm = TRUE, type = 7),
+    orders_n = dplyr::n(),
+    .by = c(key_name, vendor)
+    )
+
+
+# Purchase cadence (median gap) → weeks
+po_cadence <- po_orders %>%
+  dplyr::group_by(key_name, vendor) %>%
+  dplyr::summarise(
+    gap_days_med = {
+      d <- sort(unique(p_date))
+      if (length(d) >= 2) median(as.numeric(diff(d)), na.rm = TRUE) else NA_real_
+  },
+  .groups = "drop"
+  ) %>%
+  dplyr::mutate(cover_weeks_pref = pmax(1L, round(coalesce(gap_days_med, 7) / 7)))
+
+
+po_behavior <- po_lot_pref %>%
+  dplyr::full_join(po_cadence, by = c("key_name","vendor")) %>%
+  dplyr::mutate(
+    lot_pref_raw = if (isTRUE(params$use_lot_pref_p75)) lot_p75 else lot_med,
+    lot_pref = dplyr::coalesce(lot_pref_raw, lot_med, 0),
+    lot_pref = dplyr::if_else(!is.finite(lot_pref) | lot_pref < 0, 0, lot_pref),
+    cover_weeks_pref = dplyr::coalesce(cover_weeks_pref, params$default_lt_weeks_fallback %||% 1L)
+    )
+```
+
+```{r 07-timeseries-prep}
+max_week <- max(sales_wk$week, na.rm = TRUE)
+wk_full <- sales_wk %>%
+  dplyr::group_by(key_name) %>%
+  tidyr::complete(week = seq(min(week), max_week, by = "1 week"), fill = list(qty = 0)) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(key_name, week)
+
+
+# Intermittent flag using last 26 weeks
+sales_26 <- wk_full %>% 
+  dplyr::filter(week >= (max_week - lubridate::weeks(26)))
+intermittent_flag <- sales_26 %>%
+  dplyr::summarise(nonzero_weeks = sum(qty > 0, na.rm = TRUE), .by = key_name) %>%
+  dplyr::mutate(is_intermittent = nonzero_weeks < 6)
+```
+
+
+
+```{r 08-forecast-fns}
+mae <- function(a,b) mean(abs(a-b), na.rm = TRUE)
+blend_one <- function(vec){
+n <- length(vec)
+n_valid <- 8L
+if (n < (n_valid + 8L)) return(list(fc = mean(tail(vec, 8), na.rm = TRUE) %||% 0,
+sigma = stats::sd(tail(vec, 12), na.rm = TRUE) %||% 0))
+train <- head(vec, n - n_valid)
+valid <- tail(vec, n_valid)
+
+
+fit_arima <- tryCatch(forecast::auto.arima(train), error=function(e) NULL)
+f_arima_v <- tryCatch(as.numeric(forecast::forecast(fit_arima, h = n_valid)$mean), error=function(e) rep(NA_real_, n_valid))
+f_arima_1 <- tryCatch(as.numeric(forecast::forecast(fit_arima, h = 1)$mean), error=function(e) NA_real_)
+
+
+fit_nnet <- tryCatch(forecast::nnetar(train), error=function(e) NULL)
+f_nnet_v <- tryCatch(as.numeric(forecast::forecast(fit_nnet, h = n_valid)$mean), error=function(e) rep(NA_real_, n_valid))
+f_nnet_1 <- tryCatch(as.numeric(forecast::forecast(fit_nnet, h = 1)$mean), error=function(e) NA_real_)
+
+
+mae_arima <- mae(valid, f_arima_v)
+mae_nnet <- mae(valid, f_nnet_v)
+w_arima <- if (is.finite(mae_arima) && mae_arima > 0) 1/mae_arima else 0
+w_nnet <- if (is.finite(mae_nnet) && mae_nnet > 0) 1/mae_nnet else 0
+if (w_arima + w_nnet == 0) { w_arima <- 1; w_nnet <- 1 }
+w_sum <- w_arima + w_nnet
+w_arima <- w_arima / w_sum; w_nnet <- w_nnet / w_sum
+
+
+fc_1w <- (w_arima * (f_arima_1 %||% 0)) + (w_nnet * (f_nnet_1 %||% 0))
+pred_v <- (w_arima * f_arima_v) + (w_nnet * f_nnet_v)
+resid <- valid - pred_v
+sigma <- stats::sd(resid, na.rm = TRUE)
+list(fc = as.numeric(fc_1w %||% 0), sigma = as.numeric(sigma %||% 0))
+}
+```
+
+
+```{r 09-forecast}
+# Compute weekly forecasts and residual sigmas per SKU
+fc_tbl <- wk_full %>%
+dplyr::group_by(key_name) %>%
+dplyr::summarise(
+fc_1w = {
+y <- qty
+is_int <- (intermittent_flag$is_intermittent[match(unique(key_name), intermittent_flag$key_name)] %||% FALSE)
+if (isTRUE(is_int)) {
+fc <- tryCatch(as.numeric(tsintermittent::crost(y, h = 1, type = "croston")$frc.out[1]), error=function(e) NA_real_)
+if (is.na(fc)) fc <- mean(tail(y, 8), na.rm = TRUE) %||% 0
+fc
+} else {
+blend_one(y)$fc
+}
+},
+sigma_resid = {
+y <- qty
+is_int <- (intermittent_flag$is_intermittent[match(unique(key_name), intermittent_flag$key_name)] %||% FALSE)
+if (isTRUE(is_int)) {
+stats::sd(tail(y, 12), na.rm = TRUE) %||% 0
+} else {
+blend_one(y)$sigma
+}
+},
+.groups = "drop"
+)
+
+
+# μ (last 12 weeks mean) and ABC classification
+mu_tbl <- wk_full %>%
+dplyr::group_by(key_name) %>%
+dplyr::summarise(mu_wk = mean(tail(qty, 12), na.rm = TRUE) %||% 0, .groups = "drop")
+
+
+sales_365 <- sales_df %>%
+dplyr::filter(s_date >= (max(s_date, na.rm=TRUE) - lubridate::days(365))) %>%
+dplyr::summarise(amt_365 = sum(amt, na.rm=TRUE), .by = key_name)
+
+
+abc <- sales_365 %>%
+dplyr::arrange(dplyr::desc(amt_365)) %>%
+dplyr::mutate(cum = cumsum(replace_na(amt_365,0)),
+tot = sum(replace_na(amt_365,0)),
+cum_pct = ifelse(tot>0, cum/tot, 0)) %>%
+dplyr::mutate(
+abc_class = dplyr::case_when(
+cum_pct <= 0.80 ~ "A",
+cum_pct <= 0.95 ~ "B",
+TRUE ~ "C"
+),
+z = dplyr::case_when(
+abc_class == "A" ~ params$z_A,
+abc_class == "B" ~ params$z_B,
+TRUE ~ params$z_C
+)
+) %>%
+dplyr::select(key_name, abc_class, z)
+
+
+# Consolidate demand features
+sku_params <- fc_tbl %>%
+dplyr::left_join(mu_tbl, by = "key_name") %>%
+dplyr::left_join(abc, by = "key_name") %>%
+dplyr::mutate(z = dplyr::coalesce(z, params$z_B))
+```
+
+```{r 10-rules}
+ref_today <- max(sales_df$s_date, na.rm = TRUE)
+
+
+# Inactivity flags
+sold_180 <- sales_df %>%
+dplyr::filter(s_date >= ref_today - lubridate::days(180), qty > 0) %>%
+dplyr::summarise(sold_180 = sum(qty), .by = key_name)
+
+
+bought_365 <- pur_df %>%
+dplyr::filter(p_date >= ref_today - lubridate::days(365), p_qty > 0) %>%
+dplyr::summarise(bought_365 = sum(p_qty), .by = key_name)
+
+
+activity_flag <- sold_180 %>%
+dplyr::full_join(bought_365, by = "key_name") %>%
+dplyr::mutate(
+sold_180 = dplyr::coalesce(sold_180, 0),
+bought_365 = dplyr::coalesce(bought_365, 0),
+is_inactive = (sold_180 == 0 & bought_365 == 0)
+) %>%
+dplyr::select(key_name, is_inactive)
+
+
+sku_params <- sku_params %>%
+dplyr::left_join(activity_flag, by = "key_name") %>%
+dplyr::mutate(fc_1w = dplyr::if_else(dplyr::coalesce(is_inactive, FALSE), 0, fc_1w))
+
+
+# Ramp-down rule (13w vs prior 13w)
+wk13 <- sales_wk %>%
+dplyr::group_by(key_name) %>%
+dplyr::summarise(
+mu_last13 = mean(tail(qty, 13), na.rm = TRUE),
+mu_prev13 = mean(tail(head(qty, -13), 13), na.rm = TRUE),
+.groups="drop"
+) %>%
+dplyr::mutate(drop_flag = is.finite(mu_last13) & is.finite(mu_prev13) & mu_prev13 > 0 &
+(mu_last13/mu_prev13) <= params$rampdown_13w_ratio)
+
+
+sku_params <- sku_params %>%
+dplyr::left_join(wk13, by = "key_name") %>%
+dplyr::mutate(fc_1w = dplyr::if_else(dplyr::coalesce(drop_flag, FALSE), fc_1w * params$rampdown_fc_mult, fc_1w))
+
+
+# 90d zero-sales table (optional stop rule)
+sold_90 <- sales_df %>%
+dplyr::filter(s_date >= ref_today - lubridate::days(90), qty > 0) %>%
+dplyr::summarise(sold_90 = sum(qty), .by = key_name)
+```
+
+```{r 11-order-inputs}
+# Inventory snapshot
+inv_df <- product_list %>%
+  dplyr::select(key_name, Description, List_Price, Unit_Cost, On_Hand, Case_Pack, MOQ)
+
+# 구매행동 파라미터: (key_name, vendor) 기준
+sku_purch_params <- po_behavior %>%
+  dplyr::select(key_name, vendor, lot_pref, cover_weeks_pref) %>%
+  dplyr::mutate(
+    lot_pref         = dplyr::coalesce(lot_pref, 0),
+    cover_weeks_pref = dplyr::coalesce(cover_weeks_pref, params$default_lt_weeks_fallback)
+  )
+
+# ===== Assemble order inputs =====
+order_inputs <- sku_params %>%
+  dplyr::left_join(inv_df,          by = "key_name") %>%
+  dplyr::left_join(pur_vendor_map,  by = "key_name") %>%                 # vendor 먼저 부착
+  dplyr::left_join(sku_purch_params,by = c("key_name","vendor")) %>%     # (key_name, vendor)로 조인
+  dplyr::left_join(sold_90,         by = "key_name") %>%                 # ABC 재조인 X
+  dplyr::mutate(
+    z        = dplyr::coalesce(z, params$z_B),
+    mu_wk    = dplyr::coalesce(mu_wk, pmax(1e-9, fc_1w)),
+
+    cover_weeks_raw = pmax(1, params$default_review_weeks +
+                              dplyr::coalesce(cover_weeks_pref, params$default_lt_weeks_fallback)),
+    cover_weeks     = pmin(cover_weeks_raw, params$cover_weeks_cap)-1,
+
+    sigma_eff = pmin(dplyr::coalesce(sigma_resid, 0), mu_wk * params$sigma_cap_mu_mult),
+    S_level   = fc_1w * cover_weeks + z * sigma_eff * sqrt(cover_weeks),
+
+    need_raw  = pmax(0, S_level - nz(On_Hand, 0)),
+
+    base_need = ceiling(need_raw),
+    base_need = if (isTRUE(params$enforce_min_lot_when_ordering))
+                  ifelse(base_need > 0, pmax(base_need, dplyr::coalesce(lot_pref, 0)), base_need) else base_need,
+    Case_Pack = pmax(1, nz(Case_Pack, 1)),
+    MOQ       = pmax(1, nz(MOQ, 1)),
+    order_ea  = ceiling(base_need / Case_Pack) * Case_Pack,
+    order_ea  = pmax(order_ea, MOQ),
+
+    order_qty = ifelse(isTRUE(params$stop_if_no_sale_90d) & !is.na(sold_90) &
+                         sold_90 == 0 & nz(On_Hand, 0) >= pmax(1, fc_1w),
+                       0, as.numeric(order_ea))
+  )
+
+# 최근 N년 내 구매 벤더 (표준화 버전)
+vendor_recent <- pur_df %>%
+  dplyr::filter(p_date >= (ref_today - lubridate::years(params$recent_vendor_years))) %>%
+  dplyr::distinct(vendor)
+
+order_inputs <- order_inputs %>%
+  dplyr::filter(!is.na(vendor)) %>%
+  dplyr::semi_join(vendor_recent, by = "vendor")
+
+# (옵션) 특정 벤더만 export
+if (length(params$vendors_filter) > 0) {
+  order_inputs <- order_inputs %>% dplyr::filter(vendor %in% params$vendors_filter)
+}
+
+stopifnot("vendor" %in% names(order_inputs))
+
+```
+
+```{r 12-export}
+po_out <- order_inputs %>%
+  dplyr::transmute(
+    Vendor = vendor,
+    SKU_Key = key_name,
+    Description = Description,
+    `Forecast (wk)` = round(fc_1w, 2),
+    `On Hand` = nz(On_Hand, 0),
+    `Cover Weeks` = cover_weeks,
+    `S Level` = round(S_level, 2),
+    `Order Qty` = order_qty,
+    `Case Pack` = Case_Pack,
+    `MOQ` = MOQ,
+    `Lot Pref` = lot_pref,
+    `Unit Cost` = Unit_Cost,
+    `Est. PO Value` = order_qty * dplyr::coalesce(Unit_Cost, 0)
+    ) %>%
+  dplyr::arrange(Vendor, dplyr::desc(`Order Qty`), dplyr::desc(`Forecast (wk)`))
+
+
+vendor_summary <- po_out %>%
+dplyr::group_by(Vendor) %>%
+dplyr::summarise(
+Lines = dplyr::n(),
+Units = sum(`Order Qty`, na.rm = TRUE),
+`PO Value` = sum(`Est. PO Value`, na.rm = TRUE),
+`Avg Fc (wk)`= mean(`Forecast (wk)`, na.rm = TRUE),
+.groups = "drop"
+) %>% dplyr::arrange(dplyr::desc(`PO Value`))
+
+
+TOP_N <- 20
+top_items <- po_out %>%
+dplyr::arrange(dplyr::desc(`Order Qty`), dplyr::desc(`Forecast (wk)`)) %>%
+dplyr::select(Vendor, SKU_Key, Description, `Forecast (wk)`, `On Hand`, `Order Qty`, `Est. PO Value`) %>%
+head(TOP_N)
+
+
+overall_summary <- tibble::tibble(
+Metric = c(paste0("Active Vendors (<= ", params$recent_vendor_years,"y)"), "Lines", "Units", "PO Value"),
+Value = c(
+dplyr::n_distinct(po_out$Vendor),
+nrow(po_out),
+sum(po_out$`Order Qty`, na.rm = TRUE),
+sum(po_out$`Est. PO Value`, na.rm = TRUE)
+)
+)
+
+
+col_defs <- tibble::tribble(
+~Column, ~Meaning,
+"Forecast (wk)", "다음 1주 수요 예측치(ARIMA/NNETAR 블렌딩; 간헐은 Croston)",
+"On Hand", "현재 재고 수량",
+"Cover Weeks", "Review(주) + 평균 발주간격(주), 상한 cap 적용",
+"S Level", "목표 재고 수준 = fc×Cover + z·σ_resid·√Cover",
+"Order Qty", "권장 발주수량(케이스/MOQ/선호로트 보정 후)",
+"Case Pack", "케이스 묶음 단위(없으면 1)",
+"MOQ", "최소주문수량(없으면 1)",
+"Lot Pref", "최근 주문에서 관측된 선호 로트(주로 75분위)",
+"Unit Cost", "매입원가",
+"Est. PO Value", "발주원가 추정치 = Order Qty × Unit Cost"
+)
+
+
+out_path <- paste0("PO_Recommendation_", format(Sys.Date(), "%Y%m%d"), ".xlsx")
+wb <- openxlsx::createWorkbook()
+openxlsx::modifyBaseFont(wb, fontName = "Calibri", fontSize = 11)
+
+
+st_title <- openxlsx::createStyle(fontSize = 16, textDecoration = "bold", halign = "left")
+st_header <- openxlsx::createStyle(textDecoration = "bold", halign = "center", border = "Bottom")
+st_num <- openxlsx::createStyle(numFmt = "#,##0.00")
+st_int <- openxlsx::createStyle(numFmt = "#,##0")
+st_money <- openxlsx::createStyle(numFmt = "#,##0")
+openxlsx::addWorksheet(wb, "Summary", gridLines = FALSE)
+
+
+openxlsx::writeData(wb, "Summary", paste0("PO Summary (", format(Sys.Date(), "%Y-%m-%d"), ")"), startRow = 1, startCol = 1)
+openxlsx::addStyle(wb, "Summary", st_title, rows = 1, cols = 1)
+
+
+r <- 3
+openxlsx::writeData(wb, "Summary", "Column Definitions", startRow = r, startCol = 1, headerStyle = st_header)
+openxlsx::writeData(wb, "Summary", col_defs, startRow = r+1, startCol = 1, headerStyle = st_header)
+openxlsx::setColWidths(wb, "Summary", cols = 1:2, widths = "auto")
+r <- r + nrow(col_defs) + 4
+
+
+openxlsx::writeData(wb, "Summary", "Overall", startRow = r, startCol = 1, headerStyle = st_header)
+openxlsx::writeData(wb, "Summary", overall_summary, startRow = r+1, startCol = 1, headerStyle = st_header)
+openxlsx::setColWidths(wb, "Summary", cols = 1:2, widths = "auto")
+
+
+openxlsx::writeData(wb, "Summary", "By Vendor", startRow = r, startCol = 4, headerStyle = st_header)
+openxlsx::writeData(wb, "Summary", vendor_summary, startRow = r+1, startCol = 4, headerStyle = st_header)
+openxlsx::setColWidths(wb, "Summary", cols = 4:(3+ncol(vendor_summary)), widths = "auto")
+
+
+try(openxlsx::moveWorksheet(wb, sheet = "Summary", pos = 1), silent = TRUE)
+
+
+openxlsx::addWorksheet(wb, "PO_All", gridLines = FALSE)
+openxlsx::writeData(wb, "PO_All", po_out, startRow = 1, startCol = 1, withFilter = TRUE, headerStyle = st_header)
+openxlsx::freezePane(wb, "PO_All", firstRow = TRUE)
+openxlsx::setColWidths(wb, "PO_All", cols = 1:ncol(po_out), widths = "auto")
+if (nrow(po_out) > 0) {
+rows <- 2:(1+nrow(po_out))
+openxlsx::addStyle(wb, "PO_All", st_num, rows = rows, cols = which(names(po_out) %in% c("Forecast (wk)","S Level")), gridExpand = TRUE)
+openxlsx::addStyle(wb, "PO_All", st_int, rows = rows, cols = which(names(po_out) %in% c("On Hand","Cover Weeks","Order Qty","Case Pack","MOQ","Lot Pref")), gridExpand = TRUE)
+openxlsx::addStyle(wb, "PO_All", st_money, rows = rows, cols = which(names(po_out) %in% c("Unit Cost","Est. PO Value")), gridExpand = TRUE)
+}
+
+
+for (v in unique(na.omit(po_out$Vendor))) {
+sheet <- substr(v, 1, 31)
+dat <- po_out %>% dplyr::filter(Vendor == v)
+openxlsx::addWorksheet(wb, sheet, gridLines = FALSE)
+openxlsx::writeData(wb, sheet, dat, startRow = 1, startCol = 1, withFilter = TRUE, headerStyle = st_header)
+openxlsx::freezePane(wb, sheet, firstRow = TRUE)
+openxlsx::setColWidths(wb, sheet, cols = 1:ncol(dat), widths = "auto")
+}
+
+
+openxlsx::saveWorkbook(wb, out_path, overwrite = TRUE)
+message("Saved: ", normalizePath(out_path))
+```

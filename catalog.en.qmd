@@ -1,0 +1,182 @@
+---
+title: "Product Catalog"
+toc: false
+page-layout: article
+---
+
+<!-- Quick jump pills -->
+<div class="mb-3" style="display:flex;flex-wrap:wrap;gap:.5rem">
+  <a class="btn btn-gold"   href="#all">All Items</a>
+  <a class="btn btn-brand"  href="#alcohol">Alcohol Beverage</a>
+  <a class="btn btn-light"  href="#meat">Meat</a>
+  <a class="btn btn-light"  href="#seafood">Seafood</a>
+  <a class="btn btn-light"  href="#vegetable">Vegetables</a>
+  <a class="btn btn-light"  href="#sauce">Sauces & Oils</a>
+  <a class="btn btn-light"  href="#grain">Grain & Powder</a>
+  <a class="btn btn-light"  href="#houseware">Houseware</a>
+  <a class="btn btn-light"  href="#chilled">Chilled</a>
+  <a class="btn btn-light"  href="#frozen">Frozen</a>
+  <a class="btn btn-light"  href="#dry">Dry Goods</a>
+</div>
+
+## All Items {#all}
+
+<div class="pdf-embed">
+  <object data="static/brochure/bizzup-brochure.pdf#view=FitH" type="application/pdf">
+    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure.pdf" target="_blank">Open the catalog</a>.</p>
+  </object>
+</div>
+
+**Download**  
+- [Full catalog (PDF)](static/brochure/bizzup-brochure.pdf)
+
+---
+
+## Alcohol Beverage {#alcohol}
+
+<div class="pdf-embed">
+  <object data="static/brochure/bizzup-alcohol-beverage-2025.pdf#view=FitH" type="application/pdf">
+    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-alcohol-beverage-2025.pdf" target="_blank">Open the catalog</a>.</p>
+  </object>
+</div>
+
+**Download**  
+- [Alcohol Beverage 2025 (PDF)](static/brochure/bizzup-alcohol-beverage-2025.pdf)
+
+<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=alcohol">Browse as cards</a>
+
+---
+
+## Meat {#meat}
+
+<div class="pdf-embed">
+  <object data="static/brochure/bizzup-brochure-meat.pdf#view=FitH" type="application/pdf">
+    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-meat.pdf" target="_blank">Open</a>.</p>
+  </object>
+</div>
+
+**Download**  
+- [Meat (PDF)](static/brochure/bizzup-brochure-meat.pdf)
+
+<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=meat">Browse as cards</a>
+
+---
+
+## Seafood {#seafood}
+
+<div class="pdf-embed">
+  <object data="static/brochure/bizzup-brochure-seafood.pdf#view=FitH" type="application/pdf">
+    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-seafood.pdf" target="_blank">Open</a>.</p>
+  </object>
+</div>
+
+**Download**  
+- [Seafood (PDF)](static/brochure/bizzup-brochure-seafood.pdf)
+
+<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=seafood">Browse as cards</a>
+
+---
+
+## Vegetables {#vegetable}
+
+<div class="pdf-embed">
+  <object data="static/brochure/bizzup-brochure-vegetable.pdf#view=FitH" type="application/pdf">
+    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-vegetable.pdf" target="_blank">Open</a>.</p>
+  </object>
+</div>
+
+**Download**  
+- [Vegetable (PDF)](static/brochure/bizzup-brochure-vegetable.pdf)
+
+<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=vegetable">Browse as cards</a>
+
+---
+
+## Sauces & Oils {#sauce}
+
+<div class="pdf-embed">
+  <object data="static/brochure/bizzup-brochure-sauce.pdf#view=FitH" type="application/pdf">
+    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-sauce.pdf" target="_blank">Open</a>.</p>
+  </object>
+</div>
+
+**Download**  
+- [Sauces & Oils (PDF)](static/brochure/bizzup-brochure-sauce.pdf)
+
+<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=sauce">Browse as cards</a>
+
+---
+
+## Grain & Powder {#grain}
+
+<div class="pdf-embed">
+  <object data="static/brochure/bizzup-brochure-grain_powder.pdf#view=FitH" type="application/pdf">
+    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-grain_powder.pdf" target="_blank">Open</a>.</p>
+  </object>
+</div>
+
+**Download**  
+- [Grain & Powder (PDF)](static/brochure/bizzup-brochure-grain_powder.pdf)
+
+<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=grain">Browse as cards</a>
+
+---
+
+## Houseware {#houseware}
+
+<div class="pdf-embed">
+  <object data="static/brochure/bizzup-brochure-houseware.pdf#view=FitH" type="application/pdf">
+    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-houseware.pdf" target="_blank">Open</a>.</p>
+  </object>
+</div>
+
+**Download**  
+- [Houseware (PDF)](static/brochure/bizzup-brochure-houseware.pdf)
+
+<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=houseware">Browse as cards</a>
+
+---
+
+## Chilled {#chilled}
+
+<div class="pdf-embed">
+  <object data="static/brochure/bizzup-brochure-chilled.pdf#view=FitH" type="application/pdf">
+    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-chilled.pdf" target="_blank">Open</a>.</p>
+  </object>
+</div>
+
+**Download**  
+- [Chilled (PDF)](static/brochure/bizzup-brochure-chilled.pdf)
+
+<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=chilled">Browse as cards</a>
+
+---
+
+## Frozen {#frozen}
+
+<div class="pdf-embed">
+  <object data="static/brochure/bizzup-brochure-frozen.pdf#view=FitH" type="application/pdf">
+    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-frozen.pdf" target="_blank">Open</a>.</p>
+  </object>
+</div>
+
+**Download**  
+- [Frozen (PDF)](static/brochure/bizzup-brochure-frozen.pdf)
+
+<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=frozen">Browse as cards</a>
+
+---
+
+## Dry Goods {#dry}
+
+<div class="pdf-embed">
+  <object data="static/brochure/bizzup-brochure-dry.pdf#view=FitH" type="application/pdf">
+    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-dry.pdf" target="_blank">Open</a>.</p>
+  </object>
+</div>
+
+**Download**  
+- [Dry Goods (PDF)](static/brochure/bizzup-brochure-dry.pdf)
+
+<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=dry">Browse as cards</a>
+

@@ -1,0 +1,25 @@
+---
+title: "Contact"
+---
+
+```{=html}
+<div class="row g-4 align-items-start contact-two-col">
+  <div class="col-md-6">
+    <img src="assets/img/bizzup_map.png" alt="Map to Bizz Trading Inc." class="map-frame">
+  </div>
+
+  <div class="col-md-6">
+    <h3 class="mb-3">Bizz Trading Inc. (Bizzup Depot)</h3>
+
+    <p class="contact-line"><strong>Address:</strong> 745 85th Ave STE E, Oakland, CA 94621</p>
+    <p class="contact-line"><strong>Email:</strong> info@bizzupdepot.com</p>
+    <p class="contact-line"><strong>Phone:</strong> (510) 542-1324</p>
+
+    <p class="mt-3">
+      <a class="btn btn-brand" href="mailto:info@bizzupdepot.com?subject=Bizzup%20Website%20Inquiry">Email us</a>
+      <a class="btn btn-light" href="tel:+15105421324">Call</a>
+    </p>
+  </div>
+</div>
+
+```
