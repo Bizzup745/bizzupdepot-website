@@ -1,0 +1,133 @@
+---
+title: "About Bizz Trading Inc."
+toc: false
+---
+
+
+## Overview
+Bizz Trading Inc. (DBA: Bizzup Depot)은 2017년 7월 설립되어 캘리포니아 오클랜드에 본사를 두고 있으며, 새크라멘토에서 몬터레이, 스톡턴에 이르는 북부 캘리포니아 전역을 주요 영업권으로 하고 있습니다. 소매·도매·유통을 기반으로 출발한 당사는 현재 다각화된 식품 전문 기업으로 성장하였습니다.
+현재 Bizzup Depot은 오토기와 타카라 사케 USA의 북부 캘리포니아 공식 유통사로 활동하고 있으며, 독점 한국 식품을 직접 수입·공급하고 있습니다. 또한 10,800 평방피트 규모의 USDA 인증 육가공·포장 시설과 대규모 냉동 및및 냉장 보관 인프라, 그리고 자체 배송 차량을 보유하여 공급망 전반에서 품질과 안정성을 보장합니다.
+도매 유통을 넘어, Bizzup Depot은 Ploma LLC와의 전략적 파트너십을 통해 소비자 직배송 서비스를 제공하고 있으며, 최근 오클랜드에 자체 레스토랑을 개점하여 사업 영역을 확장하였습니다. 현재 200여 개의 레스토랑과 30여 개의 마켓과 협력하며, 북부 캘리포니아의 미식 문화를 풍성하게 하는 정통의 맛을 전하고 있습니다.
+
+
+## Mission
+Bizzup Depot의 사명은 혁신적인 유통 체계, 강력한 지역 파트너십, 그리고 소비자 직배송 채널을 통해 프리미엄 한식 및 아시아 식품을 제공함으로써 지역사회 발전에 기여하고 풍요로운 미식 경험을 창출하는 것입니다.
+저희는 지속 가능하고 투명한 공급망을 구축하고, 레스토랑 및 소매 파트너들의 성공을 지원하며, 정통 식문화를 소개하여 문화 교류와 창의적 영감을 촉진하고자 합니다. 신뢰할 수 있는 품질과 혁신적 접근을 결합하여, Bizzup Depot은 문화·지역·식문화를 잇는 든든한 파트너로 자리매김할 것입니다.
+
+
+## Company Profile
+
+```{r, include=FALSE}
+# 썸네일 자동 생성 (없으면 만들고, 있으면 건너뜀)
+if (!requireNamespace("pdftools", quietly = TRUE)) install.packages("pdftools")
+dir.create("static/thumbnails", recursive = TRUE, showWarnings = FALSE)
+if (!file.exists("static/thumbnails/profile-eng.jpg"))
+  pdftools::pdf_convert("static/bizzup-company-profile-eng.pdf",
+                        pages = 1, filenames = "static/thumbnails/profile-eng.jpg", dpi = 180)
+if (!file.exists("static/thumbnails/profile-jap.jpg"))
+  pdftools::pdf_convert("static/bizzup-company-profile-jap.pdf",
+                        pages = 1, filenames = "static/thumbnails/profile-jap.jpg", dpi = 180)
+```
+
+
+```{=html}
+
+<style>
+/* 크기/여백 변수 */
+:root{
+  --card-min: 280px;    /* 카드 최소 너비 (기존 170px → 크게) */
+  --card-gap: 1.25rem;
+}
+
+.brochure-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(var(--card-min), 1fr));
+  gap:var(--card-gap);
+  margin:2rem auto;
+  max-width:1200px;     /* 전체 그리드 최대 폭(원하면 1400px로 더 키워도 됨) */
+}
+
+.brochure-card{
+  background:#121212;   /* 더 어두운 카드 배경 */
+  border-radius:1rem;
+  padding:1rem 1rem 1.25rem;
+  text-align:center;
+  color:#fff;           /* 카드 내 기본 글자색 흰색 */
+}
+
+.brochure-card img{
+  width:100%;
+  aspect-ratio:3/4;
+  object-fit:cover;
+  border:4px solid #fff;
+  border-radius:.75rem;
+  box-shadow:0 8px 28px rgba(0,0,0,.45);
+}
+
+.brochure-title{
+  margin:.75rem 0 .5rem;
+  font-weight:700;
+  letter-spacing:.02em;
+  color:#fff !important;     /* 제목 흰색 고정 */
+}
+
+.brochure-actions{
+  display:flex;
+  gap:.6rem;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+/* 버튼(링크) 가독성 ↑ */
+.brochure-actions a{
+  color:#fff !important;     /* 링크 글자 흰색 */
+  border:1px solid rgba(255,255,255,.45);
+  padding:.4rem .7rem;
+  border-radius:.5rem;
+  text-decoration:none;
+}
+.brochure-actions a:hover{
+  background:#fff;
+  color:#111 !important;
+  border-color:#fff;
+}
+
+/* 모바일에서 너무 커지지 않게 최소폭 살짝 줄임 */
+@media (max-width: 640px){
+  :root{ --card-min: 240px; }
+}
+</style>
+
+
+<div class="brochure-grid">
+
+  <figure class="brochure-card">
+    <a href="static/bizzup-company-profile-eng.pdf" target="_blank" rel="noopener">
+      <img src="static/thumbnails/profile-eng.jpg" alt="Company Profile 2025 (ENG)" loading="lazy">
+    </a>
+    <figcaption>
+      <div class="brochure-title">Company Profile 2025 (ENG)</div>
+      <div class="brochure-actions">
+        <a href="static/bizzup-company-profile-eng.pdf" target="_blank" rel="noopener">Open</a>
+        <a href="static/bizzup-company-profile-eng.pdf" download>Download</a>
+      </div>
+    </figcaption>
+  </figure>
+
+  <figure class="brochure-card">
+    <a href="static/bizzup-company-profile-jap.pdf" target="_blank" rel="noopener">
+      <img src="static/thumbnails/profile-jap.jpg" alt="Company Profile 2025 (JAP)" loading="lazy">
+    </a>
+    <figcaption>
+      <div class="brochure-title">Company Profile 2025 (JAP)</div>
+      <div class="brochure-actions">
+        <a href="static/bizzup-company-profile-jap.pdf" target="_blank" rel="noopener">Open</a>
+        <a href="static/bizzup-company-profile-jap.pdf" download>Download</a>
+      </div>
+    </figcaption>
+  </figure>
+
+</div>
+```
+
+

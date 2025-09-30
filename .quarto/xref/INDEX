@@ -40,5 +40,14 @@
   },
   "ko/index.qmd": {
     "index.html": "d287b722"
+  },
+  "about.qmd": {
+    "about.html": "5c4b1f60"
+  },
+  "catalog.qmd": {
+    "catalog.html": "afc0ac06"
+  },
+  "contact.qmd": {
+    "contact.html": "96ed633c"
   }
 }

@@ -1,0 +1,42 @@
+website:
+  title: "비즈업 디포 (Bizzup Depot)"
+  navbar:
+    logo: assets/img/logo.png
+    logo-alt: "Bizzup Depot"
+    logo-href: index.qmd
+    left:
+      - text: "홈"
+        href: index.qmd
+      - text: "회사소개"
+        href: about.qmd
+      - text: "카탈로그"
+        menu:
+          - text: "전체보기"
+            href: catalog.qmd#all
+          - text: "주류"
+            href: catalog.qmd#alcohol
+          - text: "정육"
+            href: catalog.qmd#meat
+          - text: "수산"
+            href: catalog.qmd#seafood
+          - text: "채소"
+            href: catalog.qmd#vegetable
+          - text: "식료품"
+            href: catalog.qmd#grocery
+          - text: "소스/오일"
+            href: catalog.qmd#sauce
+          - text: "곡물·분말"
+            href: catalog.qmd#grain
+          - text: "주방/생활"
+            href: catalog.qmd#houseware
+      - text: "문의"
+        href: contact.qmd
+    right:
+      - text: "English"
+        href: ../index.qmd
+
+lang: ko
+format:
+  html:
+    theme: default
+    css: ../styles.scss

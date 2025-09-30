@@ -1,0 +1,55 @@
+---
+title: ""
+page-layout: full
+body-class: home
+toc: false
+title-block-banner: false
+---
+
+```{=html}
+
+<div class="hero-agency">
+  <div>
+    <p class="sub"></p>
+    <h1>Bizzup Depot</h1>
+    <h3>Premium Meats and Asian Grocery Distribution • Meat Processing & Packaging</h3>
+    <div class="cta">
+      <a class="btn btn-brand" href="index.qmd#services">Our Services</a>
+      <a class="btn btn-light" href="catalog.qmd">Product Catalog</a>
+    </div>
+  </div>
+</div>
+
+<section id="services" class="section-pad">
+  <h2 class="section-title">Services</h2>
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card agency p-4 h-100">
+        <h4 class="mb-3">Our Services</h4>
+        <ul class="list-unstyled mb-3">
+          <li class="icon-txt">🚚 Wholesale Food Distribution</li>
+          <li class="icon-txt">🥩 USDA Certified Meat Processing & Packaging</li>
+          <li class="icon-txt">⏰ Standard routes Tue & Thu (San Francisco), Fri (Sunnyvale)</li>
+        </ul>
+        <p class="mt-3 mb-0">Official Northern CA distributor for <strong>Ottogi</strong> and <strong>Takara Sake USA</strong>.</p>
+        <div class="map-wrap mt-3">
+          <img src="../assets/img/map.png" alt="Delivery coverage map" style="width:100%;height:auto;display:block;">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card agency p-4 h-100">
+        <h4 class="mb-3">Product Categories</h4>
+        <ul class="list-unstyled">
+          <li class="icon-txt">🥩 Meat (Custom processing available)</li>
+          <li class="icon-txt">🥗 Fresh Produce & Seafood</li>
+          <li class="icon-txt">🍜 Korean Ramen & Asian Groceries</li>
+          <li class="icon-txt">🍶 Beverages (Alcohol & Non-alcohol)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+```

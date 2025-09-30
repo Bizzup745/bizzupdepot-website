@@ -1,0 +1,132 @@
+---
+title: "About Bizz Trading Inc."
+toc: false
+---
+
+### Overview
+Bizz Trading Inc. (DBA: Bizzup Depot), established in July 2017, is headquartered in Oakland, CA, and serves a wide region of Northern California—from Sacramento in the north to Monterey in the south, and Stockton to the east. Originally rooted in retail, wholesale, and distribution, the company has grown into a multi-faceted food enterprise.
+Today, Bizzup Depot is the official Northern California distributor for Ottogi and Takara Sake USA, while also directly importing exclusive Korean products. With a 10,800 sq. ft. USDA-certified meat processing and packaging facility, extensive refrigerated storage, and a dedicated fleet of delivery vehicles, the company ensures quality and reliability across its supply chain.
+Beyond wholesale distribution, Bizzup Depot has embraced innovation through a strategic partnership with Ploma LLC to offer direct-to-consumer grocery delivery, and recently launched its own restaurant in Oakland, expanding its reach from kitchens to dining tables. Partnering with 200+ restaurants and 30+ markets, the company continues to build strong relationships and deliver authentic flavors that enrich the culinary landscape of Northern California.
+
+
+
+### Mission
+Our mission is to provide premium Korean and Asian products through innovative distribution, strong local partnerships, and direct-to-consumer channels, fostering community growth and enriching culinary experiences.
+We are committed to building sustainable and transparent supply chains, supporting the success of our restaurant and retail partners, and introducing authentic flavors that inspire cultural exchange and creativity. By combining trusted quality with forward-thinking innovation, Bizzup Depot strives to be a reliable partner and a bridge between cultures, communities, and cuisines.
+
+
+
+### Company Profile
+
+```{r, include=FALSE}
+# 썸네일 자동 생성 (없으면 만들고, 있으면 건너뜀)
+if (!requireNamespace("pdftools", quietly = TRUE)) install.packages("pdftools")
+dir.create("static/thumbnails", recursive = TRUE, showWarnings = FALSE)
+if (!file.exists("static/thumbnails/profile-eng.jpg"))
+  pdftools::pdf_convert("static/bizzup-company-profile-eng.pdf",
+                        pages = 1, filenames = "static/thumbnails/profile-eng.jpg", dpi = 180)
+if (!file.exists("static/thumbnails/profile-jap.jpg"))
+  pdftools::pdf_convert("static/bizzup-company-profile-jap.pdf",
+                        pages = 1, filenames = "static/thumbnails/profile-jap.jpg", dpi = 180)
+```
+
+
+```{=html}
+
+<style>
+/* 크기/여백 변수 */
+:root{
+  --card-min: 280px;    /* 카드 최소 너비 (기존 170px → 크게) */
+  --card-gap: 1.25rem;
+}
+
+.brochure-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(var(--card-min), 1fr));
+  gap:var(--card-gap);
+  margin:2rem auto;
+  max-width:1200px;     /* 전체 그리드 최대 폭(원하면 1400px로 더 키워도 됨) */
+}
+
+.brochure-card{
+  background:#121212;   /* 더 어두운 카드 배경 */
+  border-radius:1rem;
+  padding:1rem 1rem 1.25rem;
+  text-align:center;
+  color:#fff;           /* 카드 내 기본 글자색 흰색 */
+}
+
+.brochure-card img{
+  width:100%;
+  aspect-ratio:3/4;
+  object-fit:cover;
+  border:4px solid #fff;
+  border-radius:.75rem;
+  box-shadow:0 8px 28px rgba(0,0,0,.45);
+}
+
+.brochure-title{
+  margin:.75rem 0 .5rem;
+  font-weight:700;
+  letter-spacing:.02em;
+  color:#fff !important;     /* 제목 흰색 고정 */
+}
+
+.brochure-actions{
+  display:flex;
+  gap:.6rem;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+/* 버튼(링크) 가독성 ↑ */
+.brochure-actions a{
+  color:#fff !important;     /* 링크 글자 흰색 */
+  border:1px solid rgba(255,255,255,.45);
+  padding:.4rem .7rem;
+  border-radius:.5rem;
+  text-decoration:none;
+}
+.brochure-actions a:hover{
+  background:#fff;
+  color:#111 !important;
+  border-color:#fff;
+}
+
+/* 모바일에서 너무 커지지 않게 최소폭 살짝 줄임 */
+@media (max-width: 640px){
+  :root{ --card-min: 240px; }
+}
+</style>
+
+
+<div class="brochure-grid">
+
+  <figure class="brochure-card">
+    <a href="static/bizzup-company-profile-eng.pdf" target="_blank" rel="noopener">
+      <img src="static/thumbnails/profile-eng.jpg" alt="Company Profile 2025 (ENG)" loading="lazy">
+    </a>
+    <figcaption>
+      <div class="brochure-title">Company Profile 2025 (ENG)</div>
+      <div class="brochure-actions">
+        <a href="static/bizzup-company-profile-eng.pdf" target="_blank" rel="noopener">Open</a>
+        <a href="static/bizzup-company-profile-eng.pdf" download>Download</a>
+      </div>
+    </figcaption>
+  </figure>
+
+  <figure class="brochure-card">
+    <a href="static/bizzup-company-profile-jap.pdf" target="_blank" rel="noopener">
+      <img src="static/thumbnails/profile-jap.jpg" alt="Company Profile 2025 (JAP)" loading="lazy">
+    </a>
+    <figcaption>
+      <div class="brochure-title">Company Profile 2025 (JAP)</div>
+      <div class="brochure-actions">
+        <a href="static/bizzup-company-profile-jap.pdf" target="_blank" rel="noopener">Open</a>
+        <a href="static/bizzup-company-profile-jap.pdf" download>Download</a>
+      </div>
+    </figcaption>
+  </figure>
+
+</div>
+```

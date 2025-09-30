@@ -1,9 +1,2 @@
-# Quarto build outputs
-_site/
-_freeze/
-project-cache/
-quarto-session-temp*/
-.Rhistory
-.Rproj.user/
 /.quarto/
 **/*.quarto_ipynb

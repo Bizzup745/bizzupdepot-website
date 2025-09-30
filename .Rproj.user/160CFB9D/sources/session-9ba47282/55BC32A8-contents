@@ -1,0 +1,50 @@
+project:
+  type: website
+  output-dir: ../_site/en
+
+website:
+  title: "Bizz Trading Inc."
+  navbar:
+    left:
+      - text: "About"
+        href: en/about.qmd
+      - text: "Services"
+        href: en/index.qmd#services
+      - text: "Product Catalog"
+        menu:
+          - text: "All Items"
+            href: catalog.qmd#all
+          - text: "Alcohol Beverage"
+            href: catalog.qmd#alcohol
+          - text: "Meat"
+            href: catalog.qmd#meat
+          - text: "Seafood"
+            href: catalog.qmd#seafood
+          - text: "Vegetables"
+            href: catalog.qmd#vegetable
+          - text: "Sauces & Oils"
+            href: catalog.qmd#sauce
+          - text: "Grain & Powder"
+            href: catalog.qmd#grain
+          - text: "Houseware"
+            href: catalog.qmd#houseware
+          - text: "Chilled"
+            href: catalog.qmd#chilled
+          - text: "Frozen"
+            href: catalog.qmd#frozen
+          - text: "Dry Foods"
+            href: catalog.qmd#dry
+      - text: "Contact"
+        href: en/ contact.qmd
+    right:
+      - text: "한국어"
+        href: ../ko/index.qmd
+        
+format:
+  html:
+    theme: cosmo
+    css:
+      - /assets/agency.css
+      - /styles.scss
+    toc: false
+    smooth-scroll: true
