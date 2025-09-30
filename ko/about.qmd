@@ -1,20 +1,21 @@
 ---
 title: "About Bizz Trading Inc."
+toc: false
 ---
 
-## Overview
-Bizz Trading Inc. (DBA: Bizzup Depot), established in July 2017, is headquartered in Oakland, CA, and serves a wide region of Northern California—from Sacramento in the north to Monterey in the south, and Stockton to the east. Originally rooted in retail, wholesale, and distribution, the company has grown into a multi-faceted food enterprise.
-Today, Bizzup Depot is the official Northern California distributor for Ottogi and Takara Sake USA, while also directly importing exclusive Korean products. With a 10,800 sq. ft. USDA-certified meat processing and packaging facility, extensive refrigerated storage, and a dedicated fleet of delivery vehicles, the company ensures quality and reliability across its supply chain.
-Beyond wholesale distribution, Bizzup Depot has embraced innovation through a strategic partnership with Ploma LLC to offer direct-to-consumer grocery delivery, and recently launched its own restaurant in Oakland, expanding its reach from kitchens to dining tables. Partnering with 200+ restaurants and 30+ markets, the company continues to build strong relationships and deliver authentic flavors that enrich the culinary landscape of Northern California.
 
+## Overview
+Bizz Trading Inc. (DBA: Bizzup Depot)은 2017년 7월 설립되어 캘리포니아 오클랜드에 본사를 두고 있으며, 새크라멘토에서 몬터레이, 스톡턴에 이르는 북부 캘리포니아 전역을 주요 영업권으로 하고 있습니다. 소매·도매·유통을 기반으로 출발한 당사는 현재 다각화된 식품 전문 기업으로 성장하였습니다.
+현재 Bizzup Depot은 오토기와 타카라 사케 USA의 북부 캘리포니아 공식 유통사로 활동하고 있으며, 독점 한국 식품을 직접 수입·공급하고 있습니다. 또한 10,800 평방피트 규모의 USDA 인증 육가공·포장 시설과 대규모 냉동 및및 냉장 보관 인프라, 그리고 자체 배송 차량을 보유하여 공급망 전반에서 품질과 안정성을 보장합니다.
+도매 유통을 넘어, Bizzup Depot은 Ploma LLC와의 전략적 파트너십을 통해 소비자 직배송 서비스를 제공하고 있으며, 최근 오클랜드에 자체 레스토랑을 개점하여 사업 영역을 확장하였습니다. 현재 200여 개의 레스토랑과 30여 개의 마켓과 협력하며, 북부 캘리포니아의 미식 문화를 풍성하게 하는 정통의 맛을 전하고 있습니다.
 
 
 ## Mission
-Our mission is to provide premium Korean and Asian products through innovative distribution, strong local partnerships, and direct-to-consumer channels, fostering community growth and enriching culinary experiences.
-We are committed to building sustainable and transparent supply chains, supporting the success of our restaurant and retail partners, and introducing authentic flavors that inspire cultural exchange and creativity. By combining trusted quality with forward-thinking innovation, Bizzup Depot strives to be a reliable partner and a bridge between cultures, communities, and cuisines.
+Bizzup Depot의 사명은 혁신적인 유통 체계, 강력한 지역 파트너십, 그리고 소비자 직배송 채널을 통해 프리미엄 한식 및 아시아 식품을 제공함으로써 지역사회 발전에 기여하고 풍요로운 미식 경험을 창출하는 것입니다.
+저희는 지속 가능하고 투명한 공급망을 구축하고, 레스토랑 및 소매 파트너들의 성공을 지원하며, 정통 식문화를 소개하여 문화 교류와 창의적 영감을 촉진하고자 합니다. 신뢰할 수 있는 품질과 혁신적 접근을 결합하여, Bizzup Depot은 문화·지역·식문화를 잇는 든든한 파트너로 자리매김할 것입니다.
 
 
+### 회사 소개서 (다운로드)
+- **영문**: [Company Profile 2025 (ENG)]({{< path "static/brochure/bizzup-company-profile-eng.pdf" >}})
+- **일문**: [Company Profile 2025 (JAP)]({{< path "static/brochure/bizzup-company-profile-jap.pdf" >}})
 
-### Company Profile (Download)
-- **English**: [Company Profile 2025 ENG](static/Bizzup_Company Profile 2025 ENG.pdf)  
-- **日本語**: [Company Profile 2025 JAP](static/Bizzup_Company Profile 2025 JAP.pdf)

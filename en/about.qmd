@@ -20,5 +20,5 @@ We are committed to building sustainable and transparent supply chains, supporti
  
 
 ### Company Profile (Download)
-- **English**: [Company Profile 2025 ENG](static/Bizzup_Company Profile 2025 ENG.pdf)  
-- **日本語**: [Company Profile 2025 JAP](static/Bizzup_Company Profile 2025 JAP.pdf)
+- **English**: [Company Profile 2025 (ENG)]({{< path "static/brochure/bizzup-company-profile-eng.pdf" >}})
+- **日本語**: [Company Profile 2025 (JAP)]({{< path "static/brochure/bizzup-company-profile-jap.pdf" >}})

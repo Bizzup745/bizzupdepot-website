@@ -1,42 +1,35 @@
+# _quarto.yml (루트)
 project:
   type: website
-  output-dir: _site
-  resources:
-    - static/
-    - assets/
+  render: [en, ko]   # ← 루트에서 render 하면 en/ ko/ 둘 다 같이 빌드
 
 website:
   site-url: https://bizzup745.github.io/bizzupdepot-website/
   title: "Bizz Trading Inc. (Bizzup Depot)"
-  favicon: /bizzupdepot-website/assets/img/logo.png
-
+  favicon: assets/img/logo.png        # ← 상대 경로
   navbar:
-    logo: /bizzupdepot-website/assets/img/logo.png
+    logo: assets/img/logo.png         # ← 상대 경로
     left:
       - text: "About"
-        href: /bizzupdepot-website/en/about.html
+        href: en/about.qmd            # ← QMD 상대경로 (Quarto가 .html로 변환)
       - text: "Services"
-        href: /bizzupdepot-website/#services
+        href: en/index.qmd#services
       - text: "Product Catalog"
-        href: /bizzupdepot-website/en/catalog.html
+        href: en/catalog.qmd
       - text: "Contact"
-        href: /bizzupdepot-website/en/contact.html
+        href: en/contact.qmd
     right:
       - text: "ENGLISH"
-        href: /bizzupdepot-website/en/index.html
+        href: en/index.qmd
       - text: "한국어"
-        href: /bizzupdepot-website/ko/index.html
-
-  page-footer:
-    left: "© 2025 Bizz Trading Inc."
-    right: "745 85th Ave STE E, Oakland, CA · info@bizzupdepot.com · (510) 542-1324"
+        href: ko/index.qmd
 
 format:
   html:
     theme: cosmo
     css:
-      - /bizzupdepot-website/assets/agency.css
-      - /bizzupdepot-website/assets/styles.scss
+      - assets/agency.css             # ← 상대 경로
+      - styles.scss                   # ← 상대 경로
     toc: false
     smooth-scroll: true
     include-in-header:

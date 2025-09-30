@@ -20,163 +20,120 @@ page-layout: article
 </div>
 
 ## All Items {#all}
-
 <div class="pdf-embed">
-  <object data="static/brochure/bizzup-brochure.pdf#view=FitH" type="application/pdf">
-    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure.pdf" target="_blank">Open the catalog</a>.</p>
+  <object data='{{< path "..static/brochure/bizzup-brochure.pdf" >}}#view=Fit' type="application/pdf">
+    <p>PDF viewer failed to load. <a href='{{< path "static/brochure/bizzup-brochure.pdf" >}}' target="_blank">Open the catalog</a>.</p>
   </object>
 </div>
-
 **Download**  
-- [Full catalog (PDF)](static/brochure/bizzup-brochure.pdf)
+- [Full catalog (PDF)]({{< path "static/brochure/bizzup-brochure.pdf" >}})
 
 ---
 
 ## Alcohol Beverage {#alcohol}
-
 <div class="pdf-embed">
-  <object data="static/brochure/bizzup-alcohol-beverage-2025.pdf#view=FitH" type="application/pdf">
-    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-alcohol-beverage-2025.pdf" target="_blank">Open the catalog</a>.</p>
+  <object data='{{< path "static/brochure/bizzup-alcohol-beverage-2025.pdf" >}}#view=Fit' type="application/pdf">
+    <p>PDF viewer failed to load. <a href='{{< path "static/brochure/bizzup-alcohol-beverage-2025.pdf" >}}' target="_blank">Open</a>.</p>
   </object>
 </div>
-
 **Download**  
-- [Alcohol Beverage 2025 (PDF)](static/brochure/bizzup-alcohol-beverage-2025.pdf)
-
-<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=alcohol">Browse as cards</a>
+- [Alcohol Beverage 2025 (PDF)]({{< path "static/brochure/bizzup-alcohol-beverage-2025.pdf" >}})
 
 ---
 
 ## Meat {#meat}
-
 <div class="pdf-embed">
-  <object data="static/brochure/bizzup-brochure-meat.pdf#view=FitH" type="application/pdf">
-    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-meat.pdf" target="_blank">Open</a>.</p>
+  <object data='{{< path "static/brochure/bizzup-brochure-meat.pdf" >}}#view=Fit' type="application/pdf">
+    <p>PDF viewer failed to load. <a href='{{< path "static/brochure/bizzup-brochure-meat.pdf" >}}' target="_blank">Open</a>.</p>
   </object>
 </div>
-
 **Download**  
-- [Meat (PDF)](static/brochure/bizzup-brochure-meat.pdf)
-
-<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=meat">Browse as cards</a>
+- [Meat (PDF)]({{< path "static/brochure/bizzup-brochure-meat.pdf" >}})
 
 ---
 
 ## Seafood {#seafood}
-
 <div class="pdf-embed">
-  <object data="static/brochure/bizzup-brochure-seafood.pdf#view=FitH" type="application/pdf">
-    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-seafood.pdf" target="_blank">Open</a>.</p>
+  <object data='{{< path "static/brochure/bizzup-brochure-seafood.pdf" >}}#view=Fit' type="application/pdf">
+    <p>PDF viewer failed to load. <a href='{{< path "static/brochure/bizzup-brochure-seafood.pdf" >}}' target="_blank">Open</a>.</p>
   </object>
 </div>
-
 **Download**  
-- [Seafood (PDF)](static/brochure/bizzup-brochure-seafood.pdf)
-
-<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=seafood">Browse as cards</a>
+- [Seafood (PDF)]({{< path "static/brochure/bizzup-brochure-seafood.pdf" >}})
 
 ---
 
 ## Vegetables {#vegetable}
-
 <div class="pdf-embed">
-  <object data="static/brochure/bizzup-brochure-vegetable.pdf#view=FitH" type="application/pdf">
-    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-vegetable.pdf" target="_blank">Open</a>.</p>
+  <object data='{{< path "static/brochure/bizzup-brochure-vegetable.pdf" >}}#view=Fit' type="application/pdf">
+    <p>PDF viewer failed to load. <a href='{{< path "static/brochure/bizzup-brochure-vegetable.pdf" >}}' target="_blank">Open</a>.</p>
   </object>
 </div>
-
 **Download**  
-- [Vegetable (PDF)](static/brochure/bizzup-brochure-vegetable.pdf)
-
-<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=vegetable">Browse as cards</a>
+- [Vegetable (PDF)]({{< path "static/brochure/bizzup-brochure-vegetable.pdf" >}})
 
 ---
 
 ## Sauces & Oils {#sauce}
-
 <div class="pdf-embed">
-  <object data="static/brochure/bizzup-brochure-sauce.pdf#view=FitH" type="application/pdf">
-    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-sauce.pdf" target="_blank">Open</a>.</p>
+  <object data='{{< path "static/brochure/bizzup-brochure-sauce.pdf" >}}#view=Fit' type="application/pdf">
+    <p>PDF viewer failed to load. <a href='{{< path "static/brochure/bizzup-brochure-sauce.pdf" >}}' target="_blank">Open</a>.</p>
   </object>
 </div>
-
 **Download**  
-- [Sauces & Oils (PDF)](static/brochure/bizzup-brochure-sauce.pdf)
-
-<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=sauce">Browse as cards</a>
+- [Sauces & Oils (PDF)]({{< path "static/brochure/bizzup-brochure-sauce.pdf" >}})
 
 ---
 
 ## Grain & Powder {#grain}
-
 <div class="pdf-embed">
-  <object data="static/brochure/bizzup-brochure-grain_powder.pdf#view=FitH" type="application/pdf">
-    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-grain_powder.pdf" target="_blank">Open</a>.</p>
+  <object data='{{< path "static/brochure/bizzup-brochure-grain_powder.pdf" >}}#view=Fit' type="application/pdf">
+    <p>PDF viewer failed to load. <a href='{{< path "static/brochure/bizzup-brochure-grain_powder.pdf" >}}' target="_blank">Open</a>.</p>
   </object>
 </div>
-
 **Download**  
-- [Grain & Powder (PDF)](static/brochure/bizzup-brochure-grain_powder.pdf)
-
-<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=grain">Browse as cards</a>
+- [Grain & Powder (PDF)]({{< path "static/brochure/bizzup-brochure-grain_powder.pdf" >}})
 
 ---
 
 ## Houseware {#houseware}
-
 <div class="pdf-embed">
-  <object data="static/brochure/bizzup-brochure-houseware.pdf#view=FitH" type="application/pdf">
-    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-houseware.pdf" target="_blank">Open</a>.</p>
+  <object data='{{< path "static/brochure/bizzup-brochure-houseware.pdf" >}}#view=Fit' type="application/pdf">
+    <p>PDF viewer failed to load. <a href='{{< path "static/brochure/bizzup-brochure-houseware.pdf" >}}' target="_blank">Open</a>.</p>
   </object>
 </div>
-
 **Download**  
-- [Houseware (PDF)](static/brochure/bizzup-brochure-houseware.pdf)
-
-<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=houseware">Browse as cards</a>
+- [Houseware (PDF)]({{< path "static/brochure/bizzup-brochure-houseware.pdf" >}})
 
 ---
 
 ## Chilled {#chilled}
-
 <div class="pdf-embed">
-  <object data="static/brochure/bizzup-brochure-chilled.pdf#view=FitH" type="application/pdf">
-    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-chilled.pdf" target="_blank">Open</a>.</p>
+  <object data='{{< path "static/brochure/bizzup-brochure-chilled.pdf" >}}#view=Fit' type="application/pdf">
+    <p>PDF viewer failed to load. <a href='{{< path "static/brochure/bizzup-brochure-chilled.pdf" >}}' target="_blank">Open</a>.</p>
   </object>
 </div>
-
 **Download**  
-- [Chilled (PDF)](static/brochure/bizzup-brochure-chilled.pdf)
-
-<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=chilled">Browse as cards</a>
+- [Chilled (PDF)]({{< path "static/brochure/bizzup-brochure-chilled.pdf" >}})
 
 ---
 
 ## Frozen {#frozen}
-
 <div class="pdf-embed">
-  <object data="static/brochure/bizzup-brochure-frozen.pdf#view=FitH" type="application/pdf">
-    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-frozen.pdf" target="_blank">Open</a>.</p>
+  <object data='{{< path "static/brochure/bizzup-brochure-frozen.pdf" >}}#view=Fit' type="application/pdf">
+    <p>PDF viewer failed to load. <a href='{{< path "static/brochure/bizzup-brochure-frozen.pdf" >}}' target="_blank">Open</a>.</p>
   </object>
 </div>
-
 **Download**  
-- [Frozen (PDF)](static/brochure/bizzup-brochure-frozen.pdf)
-
-<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=frozen">Browse as cards</a>
+- [Frozen (PDF)]({{< path "static/brochure/bizzup-brochure-frozen.pdf" >}})
 
 ---
 
 ## Dry Goods {#dry}
-
 <div class="pdf-embed">
-  <object data="static/brochure/bizzup-brochure-dry.pdf#view=FitH" type="application/pdf">
-    <p>PDF viewer failed to load. <a href="static/brochure/bizzup-brochure-dry.pdf" target="_blank">Open</a>.</p>
+  <object data='{{< path "static/brochure/bizzup-brochure-dry.pdf" >}}#view=Fit' type="application/pdf">
+    <p>PDF viewer failed to load. <a href='{{< path "static/brochure/bizzup-brochure-dry.pdf" >}}' target="_blank">Open</a>.</p>
   </object>
 </div>
-
 **Download**  
-- [Dry Goods (PDF)](static/brochure/bizzup-brochure-dry.pdf)
-
-<a class="btn btn-brand mt-2" href="catalog-cards.en.qmd?cat=dry">Browse as cards</a>
-
+- [Dry Goods (PDF)]({{< path "static/brochure/bizzup-brochure-dry.pdf" >}})

@@ -6,7 +6,7 @@ toc: false
 ```{=html}
 <div class="row g-4 align-items-start contact-two-col">
   <div class="col-md-6">
-    <img src="assets/img/bizzup_map.png" alt="Map to Bizz Trading Inc." class="map-frame">
+    <img src="..assets/img/bizzup_map.png" alt="Map to Bizz Trading Inc." class="map-frame">
   </div>
 
   <div class="col-md-6">
@@ -18,7 +18,7 @@ toc: false
 
     <p class="mt-3">
       <a class="btn btn-brand" href="mailto:info@bizzupdepot.com?subject=Bizzup%20Website%20Inquiry">이메일 문의</a>
-      <a class="btn btn-light" href="tel:+15105421324">전화 문의의</a>
+      <a class="btn btn-light" href="tel:+15105421324">전화 문의</a>
     </p>
   </div>
 </div>
